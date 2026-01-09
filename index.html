@@ -21,18 +21,15 @@
             font-family: 'Inter', 'Sarabun', sans-serif; 
             background-color: #020617; /* Slate 950 */
             color: #ffffff;
-            overscroll-behavior-y: none; /* Prevent Pull-to-refresh */
+            /* แก้บั๊ก: ให้ scroll ได้ถ้าเนื้อหาเยอะเกินจอ */
+            overflow-x: hidden;
+            overflow-y: auto; 
         }
         
         /* Disable Input Arrows */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 
         /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -46,12 +43,12 @@
         .scan-active { animation: pulse-border 2s infinite; }
     </style>
 </head>
-<body class="min-h-[100dvh] flex flex-col lg:flex-row overflow-hidden">
+<body class="min-h-screen flex flex-col lg:flex-row">
 
-    <section class="w-full lg:w-1/2 h-auto lg:h-full p-6 lg:p-12 flex flex-col justify-center relative z-10 bg-[#020617]">
+    <section class="w-full lg:w-1/2 p-6 pt-10 lg:p-12 flex flex-col relative z-10 bg-[#020617] lg:h-screen lg:justify-center">
         
-        <div class="mb-8 lg:mb-12 flex items-center gap-3 animate-enter" style="animation-delay: 0.1s;">
-            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/50">
+        <div class="mb-6 lg:mb-12 flex items-center gap-3 animate-enter" style="animation-delay: 0.1s;">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/50 shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -62,13 +59,13 @@
             </div>
         </div>
 
-        <div class="space-y-8 animate-enter" style="animation-delay: 0.2s;">
+        <div class="space-y-6 lg:space-y-8 animate-enter" style="animation-delay: 0.2s;">
             
             <div class="relative group">
                 <label class="block text-blue-400 text-xs font-semibold tracking-wider mb-2 uppercase">Amount to Receive</label>
                 <div class="relative">
                     <input type="number" id="pp-amount" placeholder="0.00" inputmode="decimal"
-                        class="w-full bg-transparent border-b-2 border-slate-700 text-5xl lg:text-7xl font-light text-white placeholder-slate-800 focus:border-blue-500 focus:outline-none transition-colors py-2"
+                        class="w-full bg-transparent border-b-2 border-slate-700 text-5xl lg:text-7xl font-light text-white placeholder-slate-800 focus:border-blue-500 focus:outline-none transition-colors py-2 pr-12"
                         oninput="validateAndGenerate()">
                     <span class="absolute right-0 bottom-4 text-slate-500 text-lg font-medium">THB</span>
                 </div>
@@ -84,22 +81,18 @@
                     oninput="validateAndGenerate()">
             </div>
         </div>
-
-        <div class="mt-auto pt-8 text-slate-600 text-xs font-light animate-enter lg:block hidden" style="animation-delay: 0.3s;">
-            Secure Client-Side Generation • EMVCo Standard Compliant
-        </div>
     </section>
 
-    <section class="w-full lg:w-1/2 h-auto lg:h-full bg-gradient-to-br from-slate-900 to-[#0B1121] relative flex items-center justify-center p-6 lg:p-0 rounded-t-[2.5rem] lg:rounded-none border-t border-slate-800 lg:border-t-0 lg:border-l shadow-[0_-10px_40px_rgba(0,0,0,0.5)] lg:shadow-none z-20">
+    <section class="w-full lg:w-1/2 bg-gradient-to-br from-slate-900 to-[#0B1121] relative flex items-center justify-center p-6 pb-20 lg:pb-6 rounded-t-[2.5rem] lg:rounded-none border-t border-slate-800 lg:border-t-0 lg:border-l shadow-[0_-10px_40px_rgba(0,0,0,0.5)] lg:shadow-none z-20 min-h-[400px] lg:min-h-screen">
         
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px]"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[500px] h-[300px] lg:h-[500px] bg-blue-600/10 rounded-full blur-[80px] lg:blur-[100px]"></div>
         </div>
 
-        <div id="qr-card" class="relative bg-white p-6 rounded-3xl shadow-2xl w-full max-w-[340px] transform transition-all duration-500 opacity-50 scale-95 blur-sm grayscale">
+        <div id="qr-card" class="relative bg-white p-6 rounded-3xl shadow-2xl w-full max-w-[320px] transform transition-all duration-500 opacity-50 scale-95 blur-sm grayscale">
             
             <div class="flex items-center justify-between mb-6">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" alt="PromptPay" class="h-8 object-contain">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/PromptPay-logo.png" alt="PromptPay" class="h-6 lg:h-8 object-contain">
                 <div class="text-right">
                     <div class="text-[10px] text-gray-400 font-semibold uppercase">Scan via Banking App</div>
                 </div>
@@ -109,10 +102,10 @@
                 <div id="qrcode" class="opacity-80 transition-opacity duration-300"></div>
                 
                 <div id="qr-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                     </svg>
-                    <span class="text-xs font-medium">Waiting for input</span>
+                    <span class="text-xs font-medium">Ready</span>
                 </div>
             </div>
 
@@ -128,7 +121,6 @@
                 Save Image
             </button>
         </div>
-
     </section>
 
     <script>
@@ -178,8 +170,8 @@
         window.onload = function() {
             const savedId = localStorage.getItem('pro_pp_id');
             if (savedId) { ppId.value = savedId; validateAndGenerate(); }
-            // Auto focus on amount for quick use
-            setTimeout(() => ppAmount.focus(), 500); 
+            // Auto focus on amount (optional, might pop keyboard on mobile)
+            // setTimeout(() => ppAmount.focus(), 500); 
         };
 
         function validateAndGenerate() {
@@ -197,7 +189,7 @@
             if (payload) {
                 // Active State
                 qrCard.classList.remove('opacity-50', 'scale-95', 'blur-sm', 'grayscale');
-                qrCard.classList.add('scan-active'); // Add pulse
+                qrCard.classList.add('scan-active'); 
                 qrPlaceholder.classList.add('hidden');
                 qrDiv.classList.remove('opacity-80');
                 
